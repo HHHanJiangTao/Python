@@ -1,4 +1,5 @@
 from typing import Tuple
+from typing import List
 import requests
 from log import STREAM_INFO_INSTANCE as log
 
@@ -10,15 +11,26 @@ PROXIES = {
     'https': 'socks5h://127.0.0.1:19001'
 }
 
-SYMBOL=["DOGEUSDT"]
+SYMBOL=["DOGEUSDT", "TLMUSDT"]
 
-def get_recent_trades(symbol: str = None, limit: int = 1) -> Tuple:
+def get_sys_status() -> bool:
+    """get binance system status
+    
+    @return bool: True: normal, False: system maintenance"""
+    url = "%s/sapi/v1/system/status" % BINANCE_BASE_URL
+    res = eval(requests.get(url, proxies=PROXIES).text)
+    if not isinstance(res, dict):
+        log.error("error responce:%s" % res)
+        return False
+    return True if not res.get("status", 1) else False
+
+def get_recent_trades(symbol: str = None, limit: int = 1) -> List:
     """get_recent_trades
 
     @param symbol: trading pair
     @param limit: Trading volume 1 < limit < 1000
 
-    @return (status, info, trading list)
+    @return list(if empty is not correct)
     """
     url = "%s/api/v3/trades" % BINANCE_BASE_URL
 
@@ -26,7 +38,8 @@ def get_recent_trades(symbol: str = None, limit: int = 1) -> Tuple:
         err_info = \
             "symbol or limit is illegal." \
             "symbol must not None, 1 < limit < 1000!"
-        return False, err_info, []
+        log.error(err_info)
+        return []
 
     params = {
         "symbol": symbol,
@@ -35,6 +48,6 @@ def get_recent_trades(symbol: str = None, limit: int = 1) -> Tuple:
     res = requests.get(url, params=params, proxies=PROXIES).text
     res = res.replace("false", "False").replace("true", "True")
     res = eval(res)
-    return True, "get recent trades success!", res
+    return res
     
 
