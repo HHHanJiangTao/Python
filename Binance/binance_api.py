@@ -1,5 +1,6 @@
 from typing import Tuple
 from typing import List
+from typing import Dict
 import requests
 from log import STREAM_INFO_INSTANCE as log
 
@@ -49,5 +50,23 @@ def get_recent_trades(symbol: str = None, limit: int = 1) -> List:
     res = res.replace("false", "False").replace("true", "True")
     res = eval(res)
     return res
-    
+
+def get_best_trading_pair(symbol: str = None) -> Dict:
+    """get_best_trading_pair
+
+    @param symbol: trading pair
+
+    @return Dict {"seller": , "buyer":}
+    """
+    url = "%s/api/v3/ticker/bookTicker" % BINANCE_BASE_URL
+    params = {
+        "symbol": symbol
+    }
+    res = requests.get(url, params=params, proxies=PROXIES).text
+    res = eval(res)
+    return {
+        "symbol": symbol,
+        "buyer": res.get("bidPrice", 0),
+        "seller": res.get("askPrice", 0)
+    }
 
