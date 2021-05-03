@@ -2,10 +2,8 @@ import time
 import multiprocessing
 
 from proxy import ProxyProcess
-from binance_api import get_recent_trades
+from binance_api import BINANCE_INSTANCE
 from binance_api import get_sys_status
-from binance_api import get_best_trading_pair
-from binance_api import get_user_data
 from binance_api import SYMBOL
 from log import STREAM_INFO_INSTANCE as log
 
@@ -21,9 +19,11 @@ class AutoTransaction(multiprocessing.Process):
         super(AutoTransaction, self).__init__()
 
     def run(self):
-        log.info(get_recent_trades(SYMBOL[0], 3))
-        log.info(get_best_trading_pair(SYMBOL[0]))
-        get_user_data()
+        ETH_USDT_STATUS = "USDT"
+        # while True:
+        log.info(BINANCE_INSTANCE.get_user_data("USDT"))
+        log.info(BINANCE_INSTANCE.get_exchange_info("DOGEUSDT"))
+        # BINANCE_INSTANCE.limit_maker("ETHUSDT", "BUY", "0.01", "1000")
 
 
 
