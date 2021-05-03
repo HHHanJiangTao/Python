@@ -1,6 +1,11 @@
 from typing import Tuple
 from typing import List
 from typing import Dict
+import os
+import time
+import hmac
+import json
+import hashlib
 import requests
 from log import STREAM_INFO_INSTANCE as log
 
@@ -11,6 +16,9 @@ PROXIES = {
     'http': 'socks5h://127.0.0.1:19001',
     'https': 'socks5h://127.0.0.1:19001'
 }
+
+API_KEY = os.getenv("BINANCE_API_KEY")
+SECRET_KEY = os.getenv("BINANCE_SECRET_KEY")
 
 SYMBOL=["DOGEUSDT", "TLMUSDT"]
 
@@ -70,3 +78,26 @@ def get_best_trading_pair(symbol: str = None) -> Dict:
         "seller": res.get("askPrice", 0)
     }
 
+
+def get_user_data():
+    """get_best_trading_pair
+
+    @param symbol: trading pair
+
+    @return Dict {"seller": , "buyer":}
+    """
+    url = "%s/api/v3/account" % BINANCE_BASE_URL
+    params = {
+        "timestamp": int(time.time() * 1000)
+    }
+    params["signature"] = hmac.new(SECRET_KEY.encode("utf-8"),
+        json.dumps(params).encode("utf-8"),
+        digestmod=hashlib.sha256).digest()
+    headers = {
+        "X-MBX-APIKEY": API_KEY
+    }
+    res = requests.get(url, headers=headers, params=params, proxies=PROXIES).text
+    res = eval(res)
+    log.info(res)
+    log.info(requests.get("%s/api/v3/time" % BINANCE_BASE_URL, proxies=PROXIES).text)
+    log.info(params)
