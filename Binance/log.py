@@ -21,6 +21,7 @@ class Log:
         @param stream_enable: stream log enable
         """
         self.logger = logging.getLogger(log_id)
+        self.logger.setLevel(stream_level)
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         log_handler = list()
         if file_enable:

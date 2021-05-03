@@ -19,12 +19,12 @@ class AutoTransaction(multiprocessing.Process):
         super(AutoTransaction, self).__init__()
 
     def run(self):
-        print(get_recent_trades(SYMBOL[1], 3))
-
+        log.info(get_recent_trades(SYMBOL[1], 3))
 
 
 
 if __name__ == "__main__":
+    log.info("auto trade entry")
     proxy = proxy_func()
     if get_sys_status():
         auto_trade = AutoTransaction()

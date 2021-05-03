@@ -4,7 +4,7 @@ from log import STREAM_INFO_INSTANCE as log
 
 
 class ProxyProcess(multiprocessing.Process):
-    def __init__(self, config_file="/home/han/.proxy/config.json"):
+    def __init__(self, config_file="/home/hanjiangtao/.proxy/config.json"):
         """ProxyProcess"""
         super(ProxyProcess, self).__init__()
         self.config_file = config_file
