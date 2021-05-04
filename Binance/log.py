@@ -7,21 +7,19 @@ class Log:
     def __init__(self,
         log_id="log_%s" % time.time(),
         file_mode="w",
-        file_level=logging.INFO,
         file_enable=True,
-        stream_level=logging.INFO,
-        stream_enable=True):
+        stream_enable=True,
+        log_level=logging.INFO):
         """Log
 
         @param log_id: id for log
         @param file_mode: log file operate mode "a+" "w" etc.
-        @param file_level: file log level
         @param file_enable: file log enable
-        @param stream_level: stream log level
         @param stream_enable: stream log enable
+        @param log_level: stream log level
         """
         self.logger = logging.getLogger(log_id)
-        self.logger.setLevel(stream_level)
+        self.logger.setLevel(log_level)
         formatter = logging.Formatter('%(asctime)s [%(levelname)s]: %(message)s')
         log_handler = list()
         if file_enable:
@@ -29,13 +27,13 @@ class Log:
             if not os.path.isdir(os.path.join(os.getcwd(), 'log')):
                 os.makedirs(os.path.join(os.getcwd(), 'log'))
             file_handler = logging.FileHandler(log_file, file_mode, encoding='utf-8')
-            file_handler.setLevel(file_level)
+            file_handler.setLevel(log_level)
             file_handler.setFormatter(formatter)
             log_handler.append(file_handler)
 
         if stream_enable:
             stream_handler = logging.StreamHandler()
-            stream_handler.setLevel(stream_level)
+            stream_handler.setLevel(log_level)
             stream_handler.setFormatter(formatter)
             log_handler.append(stream_handler)
 

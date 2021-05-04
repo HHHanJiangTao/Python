@@ -1,3 +1,4 @@
+import os
 import subprocess
 import multiprocessing
 from log import STREAM_INFO_INSTANCE as log
@@ -15,4 +16,4 @@ class ProxyProcess(multiprocessing.Process):
         log.info("ProxyProcess Start!")
         subprocess.run(["pkill", "-f", "trojan"])
         subprocess.run(["rm", "-rf", "trojan.log"])
-        subprocess.run(["trojan", "-l", "trojan.log", "-c", self.config_file])
+        subprocess.run(["trojan", "-l", os.path.join(os.getcwd(), "trojan.log"), "-c", self.config_file])

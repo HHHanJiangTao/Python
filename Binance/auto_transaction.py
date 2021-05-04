@@ -21,7 +21,7 @@ class SingleTransaction(multiprocessing.Process):
         self._usdt_qty = 0
         self._currency_qty = 0
         self._side = ""
-        log.info(self.__class__.__name__)
+        log.info("%s class entry!", self.__class__.__name__)
 
     def initialize(self):
         if not BINANCE_INSTANCE.get_sys_status():
@@ -44,15 +44,6 @@ class SingleTransaction(multiprocessing.Process):
         log.info("the account has %f %s free!" % (self._currency_qty, self._currency))
 
         return True
-
-    def run(self):
-        if not self.initialize():
-            return
-        ETH_USDT_STATUS = "USDT"
-        # while True:
-        log.info(BINANCE_INSTANCE.get_user_data("USDT"))
-        log.info(BINANCE_INSTANCE.get_exchange_info("DOGEUSDT"))
-        # BINANCE_INSTANCE.limit_maker("ETHUSDT", "BUY", "0.01", "1000")
 
 
 if __name__ == "__main__":
