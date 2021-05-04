@@ -18,24 +18,24 @@ PROXIES = {
 SYMBOL=["DOGEUSDT", "TLMUSDT"]
 
 
-def get_sys_status() -> bool:
-    """get binance system status
-    
-    @return bool: True: normal, False: system maintenance"""
-    url = "https://api.binance.com/sapi/v1/system/status"
-    res = eval(requests.get(url, proxies=PROXIES).text)
-    if not isinstance(res, dict):
-        log.error("error responce:%s" % res)
-        return False
-    return True if not res.get("status", 1) else False
-
-
 class BinanceApi:
     def __init__(self):
         self.binance_base_url = "https://api.binance.com"
         self.api_key = os.getenv("BINANCE_API_KEY")
         self.secret_key = os.getenv("BINANCE_SECRET_KEY")
         self.timestamp_offset = 0
+
+    def get_sys_status(self) -> bool:
+        """get binance system status
+        
+        @return bool: True: normal, False: system maintenance"""
+        "https://api.binance.com/sapi/v1/system/status"
+        url = "%s/sapi/v1/system/status" % self.binance_base_url
+        res = eval(requests.get(url, proxies=PROXIES).text)
+        if not isinstance(res, dict):
+            log.error("error responce:%s" % res)
+            return False
+        return True if not res.get("status", 1) else False
 
     def _update_headers_with_signature(self, params:dict):
         query_string = '&'.join(["{}={}".format(d, params[d]) for d in params])

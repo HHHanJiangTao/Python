@@ -22,7 +22,7 @@ class Log:
         """
         self.logger = logging.getLogger(log_id)
         self.logger.setLevel(stream_level)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s [%(levelname)s]: %(message)s')
         log_handler = list()
         if file_enable:
             log_file = os.path.join(os.getcwd(), 'log', '%s.log' % (log_id))

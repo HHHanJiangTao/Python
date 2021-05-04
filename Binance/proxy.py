@@ -12,6 +12,7 @@ class ProxyProcess(multiprocessing.Process):
 
     def run(self):
         """Proxy Run"""
-        log.debug("ProxyProcess Start!")
+        log.info("ProxyProcess Start!")
         subprocess.run(["pkill", "-f", "trojan"])
-        subprocess.run(["trojan", self.config_file])
+        subprocess.run(["rm", "-rf", "trojan.log"])
+        subprocess.run(["trojan", "-l", "trojan.log", "-c", self.config_file])
