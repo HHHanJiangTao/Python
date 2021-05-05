@@ -60,6 +60,25 @@ class BinanceApi:
         }
         res = requests.post(url, headers=headers, params=params, proxies=PROXIES).text
         log.info(res)
+        return eval(res)
+
+    def cancel_order(self, symbol, order_id):
+        url = "%s/api/v3/order" % self.binance_base_url
+        params = {
+            "timestamp": str(int(time.time() * 1000)),
+            "symbol": symbol,
+            "orderId": order_id
+        }
+        params = self._update_headers_with_signature(params)
+        headers = {
+            "X-MBX-APIKEY": self.api_key
+        }
+        res = requests.delete(url, headers=headers, params=params, proxies=PROXIES).text
+        res = eval(res)
+        if res["status"] == "CANCELED":
+            return True
+        log.error("cancled failed!!")
+        return False
 
     def get_user_data(self, currency):
         """get_user_data
@@ -75,10 +94,28 @@ class BinanceApi:
         res = requests.get(url, headers=headers, params=params, proxies=PROXIES).text
         res = res.replace("false", "False").replace("true", "True")
         res = eval(res)
+        if not "balances" in res:
+            log.info(res)
+            return None
         for item in res["balances"]:
             if item["asset"] == currency:
                 return item
         return None
+
+    def query_order(self, symbol, order_id):
+        url = "%s/api/v3/order" % self.binance_base_url
+        params = {
+            "symbol": symbol,
+            "orderId": order_id,
+            "timestamp": str(int(time.time() * 1000))
+        }
+        params = self._update_headers_with_signature(params)
+        headers = {
+            "X-MBX-APIKEY": self.api_key
+        }
+        res = requests.get(url, headers=headers, params=params, proxies=PROXIES).text
+        res = res.replace("false", "False").replace("true", "True")
+        return eval(res)
 
     def get_exchange_info(self, symbol):
         url = "%s/api/v3/exchangeInfo" % self.binance_base_url
